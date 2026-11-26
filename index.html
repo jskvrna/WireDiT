@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WireDiT · A Vertex-Slot Diffusion Transformer for 3D Wireframe Reconstruction</title>
+<meta name="description" content="WireDiT reconstructs the corners and edges of a roof from street-level observations. Explore the method and watch it reconstruct five houses.">
+<link rel="icon" href="./assets/house.svg">
+<link rel="stylesheet" href="./style.css">
+<link rel="canonical" href="/WireDiT/">
+<link rel="alternate" hreflang="en" href="/WireDiT/">
+<link rel="alternate" hreflang="cs" href="/WireDiT/cs/">
+<script src="./language.js">
+</script>
+<script defer src="./site.js">
+</script>
+</head>
+<body>
+<header>
+<div class="wrap top">
+<a class="brand" href="#top" aria-label="WireDiT">
+<img alt="" src="./assets/house.svg"></a>
+<nav aria-label="Page sections">
+<a href="#overview">Overview</a>
+<a href="#findings">Findings</a>
+<a href="#gallery">Gallery</a>
+<a href="#citation">Citation</a>
+</nav>
+<div class="lang" aria-label="Language">
+<a data-lang="en" lang="en" aria-label="English" aria-current="true" href="./?lang=en">EN</a>
+<a data-lang="cs" lang="cs" aria-label="Čeština"  href="./cs/?lang=cs">CS</a>
+</div>
+</div>
+</header>
+<main class="wrap" id="top">
+<section class="hero">
+<div>
+<h1>Wire<span>DiT</span>
+</h1>
+<p class="subtitle">A Vertex-Slot Diffusion Transformer for 3D Wireframe Reconstruction</p>
+<div class="authors">
+<a href="https://jskvrna.github.io/">Jan Škvrna</a>
+<a href="https://mirapurkrabek.github.io/">Miroslav Purkrábek</a>
+<a href="https://cmp.felk.cvut.cz/~neumann/">Lukáš Neumann</a>
+</div>
+<a class="aff" href="https://vrg.fel.cvut.cz/">Visual Recognition Group, CTU in Prague</a>
+<div class="badges">
+<a class="badge award" href="https://s23dr.github.io/2026/prizes.html">1st place · CVPR 2026 S23DR</a>
+<span class="badge">WACV 2027</span>
+</div>
+<div class="actions">
+<a class="button" href="./assets/WireDiT.pdf">
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+<path d="M4 2h8l4 4v12H4z M12 2v5h4M7 11h6m-6 3h5"/>
+</svg>Paper (PDF)</a>
+<a class="code-link" href="https://huggingface.co/jskvrna/2026_s23dr">Code</a>
+<span class="pending">arXiv · coming soon</span>
+</div>
+</div>
+<figure>
+<img src="./assets/roof.svg" width="570" height="390" style="height:auto" alt="Axonometric drawing of a gabled roof with connected vertices and a sparse cloud of façade points.">
+<figcaption>
+<span class="blue-line">Roof wireframe</span>
+<span>Schematic</span>
+</figcaption>
+</figure>
+</section>
+<section id="overview" class="section">
+<div class="intro">
+<h2>What can street photos tell us about a roof?</h2>
+<div>
+<p>How long is the roof ridge? How much space is there for solar panels? If the plans are missing, answering those questions can mean paying for a laser scan or sending up a drone. With WireDiT, the starting point is a series of photos taken while walking around the house.</p>
+<p>Each view reveals a different part of the roof. WireDiT uses those clues to estimate its corners and connect them into a <strong>metric 3D wireframe</strong>. The model has real-world scale, so you can measure a ridge in metres or estimate the area of a roof slope in square metres.</p>
+<a href="https://cyber.felk.cvut.cz/news/phd-students-win-international-competition-with-ai-for-3d-roof-reconstruction/">Read the story from CTU</a>
+</div>
+</div>
+<figure class="pipeline">
+<div class="stages">
+<div class="stage">
+<img src="./assets/paper-capture.webp" alt="">
+<b>Street-level photos</b>
+</div>
+<div class="stage mid">
+<img alt="" src="./assets/house.svg">
+<b>WireDiT</b>
+</div>
+<div class="stage out">
+<img src="./assets/roof.svg" alt="">
+<b>3D wireframe</b>
+</div>
+</div>
+<figcaption>Preview of the interactive example. House photos and a rotatable reconstruction will appear here.</figcaption>
+</figure>
+</section>
+<section class="section" id="findings">
+<h2>Research findings</h2>
+<p>The model works with a sparse 3D point cloud, camera poses, scale-fitted depth maps and semantic labels derived from street-level views. HoHo provides these observations while withholding the original RGB images for privacy.</p>
+<div class="findings">
+<article class="finding">
+<strong>65.4 / 100</strong>
+<h3>First on houses the team had never seen</h3>
+<p>HoHo’s private test gave each team one submission on previously unseen houses. WireDiT led on both roof structure (65.4 out of 100) and corner F1 (79.1). It usually recovers the main roof shape, but misplaced edges cost points even for the strongest methods. The runner-up scored 64.8.</p>
+</article>
+<article class="finding">
+<strong>5.5 s</strong>
+<h3>From a prepared scene to a wireframe</h3>
+<p>On one NVIDIA A100 GPU, 5.5 seconds covered scene preprocessing, both model passes and consensus over 16 samples. The clock starts after the point cloud, depth maps and camera poses are available.</p>
+</article>
+<article class="finding">
+<strong>+2.5 points</strong>
+<h3>A second look improves the roof</h3>
+<p>Cropping around the first prediction and refining the same corners raised validation HSS from 47.4 to 49.9. That gain was larger than the next gain from 16-sample consensus, which brought HSS to 50.3.</p>
+</article>
+</div>
+<aside class="limit"><strong>A detail to watch for.</strong> A chimney can be missing from the wireframe even when the main roof is right. From street level, a chimney may leave only a handful of 3D points for the model to work with.</aside>
+</section>
+<section class="section" id="walkthrough">
+<h2 id="walk-title">How WireDiT reconstructs a roof</h2>
+<div class="walkthrough">
+<figure class="player"><video controls playsinline muted loop preload="none" aria-labelledby="walk-title" poster="./assets/cad034481c0.webp" src="./assets/cad034481c0.mp4"></video></figure>
+<ol><li><h3>Find the roof</h3><p>The first pass uses the whole point cloud to estimate the main corners and how they connect.</p></li><li><h3>Crop around the estimate</h3><p>The green volume encloses the first prediction. Points outside this region drop out, leaving a closer look at the building.</p></li><li><h3>Refine the corners</h3><p>The second pass revisits the same corners using the remaining points and updates the edges between them.</p></li></ol>
+</div>
+</section>
+<section class="section" id="gallery">
+<h2>Reconstruction gallery</h2>
+<p>Compare four houses. The dots are 3D observations, the orange lines are WireDiT’s prediction and the blue lines mark the reference roof. Watch where the lines converge along the main ridges and where smaller structures still differ.</p>
+<div class="gallery" data-assets="./assets/">
+<figure class="player">
+<video controls playsinline muted loop preload="none" aria-labelledby="scene-title" poster="./assets/01be0610fd5.webp" src="./assets/01be0610fd5.mp4">
+</video>
+<figcaption id="scene-title" aria-live="polite">House 1 · 01be0610fd5</figcaption>
+</figure>
+<div class="choices" role="group" aria-label="Select a reconstruction">
+<button type="button" data-id="01be0610fd5" data-label="House 1" aria-pressed="true">
+<img alt="" loading="lazy" src="./assets/01be0610fd5.webp">
+<span>House 1<small>01be0610fd5</small>
+</span>
+</button>
+<button type="button" data-id="19026555ec3" data-label="House 2" aria-pressed="false">
+<img alt="" loading="lazy" src="./assets/19026555ec3.webp">
+<span>House 2<small>19026555ec3</small>
+</span>
+</button>
+<button type="button" data-id="b555f8c5fc2" data-label="House 3" aria-pressed="false">
+<img alt="" loading="lazy" src="./assets/b555f8c5fc2.webp">
+<span>House 3<small>b555f8c5fc2</small>
+</span>
+</button>
+<button type="button" data-id="d7cd1551270" data-label="House 4" aria-pressed="false">
+<img alt="" loading="lazy" src="./assets/d7cd1551270.webp">
+<span>House 4<small>d7cd1551270</small>
+</span>
+</button>
+</div>
+</div>
+</section>
+<section class="section" id="citation">
+<h2>Cite WireDiT</h2>
+<div class="citation">
+<div class="cithead">
+<span>BibTeX</span>
+<span class="copy-tools"><span id="copy-feedback" role="status"></span><button id="copy" type="button" data-ok="Copied" data-fail="Select and copy below" aria-label="Copy citation" title="Copy citation"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></svg></button></span>
+</div>
+<pre id="bib">@inproceedings{skvrna2027wiredit,
+  title     = {{WireDiT}: A Vertex-Slot Diffusion Transformer for 3D Wireframe Reconstruction},
+  author    = {Skvrna, Jan and Purkrabek, Miroslav and Neumann, Lukas},
+  booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
+  year      = {2027}
+}</pre>
+</div>
+</section>
+</main>
+<footer>
+<div class="wrap">
+<a class="brand" href="#top" aria-label="WireDiT">
+<img alt="" src="./assets/house.svg"></a>
+<div class="links">
+<a href="https://vrg.fel.cvut.cz/">Visual Recognition Group</a>
+<a href="https://s23dr.github.io/2026/prizes.html">Challenge results</a>
+<a href="https://github.com/jskvrna/WireDiT">GitHub</a>
+</div>
+</div>
+</footer>
+</body>
+</html>
