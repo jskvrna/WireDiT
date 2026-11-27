@@ -570,3 +570,17 @@ footer .links {
   min-height: 44px;
   min-width: 44px;
 }
+
+.recon-layout { display:grid; grid-template-columns:20% minmax(0,1fr); background:#f4f6fa; }
+.recon-rail { padding:12px; background:white; border-right:1px solid var(--line); }
+.recon-rail strong { display:block; font-size:.85rem; margin-bottom:8px; }
+.recon-photos { display:grid; gap:7px; }
+.recon-photos button { position:relative; display:block; padding:0; overflow:hidden; border:2px solid transparent; background:#edf1f6; border-radius:6px; cursor:pointer; }
+.recon-photos button[aria-pressed=true] { border-color:#344ec7; }
+.recon-photos canvas { display:block; width:100%; aspect-ratio:2.1; }
+.recon-photos span { position:absolute; bottom:3px; left:4px; color:white; background:#192436c9; padding:1px 5px; border-radius:3px; font:600 12px system-ui; }
+.recon-stage { position:relative; min-height:clamp(340px,42vw,540px); }
+.recon-stage canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:grab; }
+.recon-stage canvas:active { cursor:grabbing; }
+.recon-reset { position:absolute; top:10px; right:10px; border:1px solid var(--line); background:white; color:var(--ink); padding:6px 10px; border-radius:6px; cursor:pointer; }
+@media(max-width:600px){.recon-rail{padding:6px 3px}.recon-rail strong{font-size:.75rem}.recon-photos canvas{aspect-ratio:1.25;object-fit:cover}.recon-layout{grid-template-columns:22% minmax(0,1fr)}}

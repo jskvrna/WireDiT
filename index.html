@@ -74,23 +74,11 @@
 <a href="https://cyber.felk.cvut.cz/news/phd-students-win-international-competition-with-ai-for-3d-roof-reconstruction/">Read the story from CTU</a>
 </div>
 </div>
-<figure class="pipeline">
-<div class="stages">
-<div class="stage">
-<img src="./assets/paper-capture.webp" alt="">
-<b>Street-level photos</b>
-</div>
-<div class="stage mid">
-<img alt="" src="./assets/house.svg">
-<b>WireDiT</b>
-</div>
-<div class="stage out">
-<img src="./assets/roof.svg" alt="">
-<b>3D wireframe</b>
-</div>
-</div>
-<figcaption>Preview of the interactive example. House photos and a rotatable reconstruction will appear here.</figcaption>
-</figure>
+<figure class="pipeline" id="reconstruction">
+<div class="recon-layout"><div class="recon-rail"><strong>Input views</strong><div class="recon-photos"></div></div>
+<div class="recon-stage"><canvas tabindex="0" aria-label="Interactive 3D reconstruction" aria-describedby="recon-help"></canvas><button type="button" class="recon-reset">Reset view</button></div></div>
+<figcaption id="recon-help">Synthetic scene. Drag to orbit, scroll to zoom, or Shift-drag to pan. On touchscreens, use two fingers to zoom and pan.</figcaption></figure>
+<script defer src="./viewer.js"></script>
 </section>
 <section class="section" id="findings">
 <h2>Research findings</h2>
