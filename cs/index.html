@@ -82,36 +82,29 @@
 </section>
 <section class="section" id="findings">
 <h2>Výsledky výzkumu</h2>
-<p>Model využívá řídké mračno 3D bodů, polohy a orientace kamer, hloubkové mapy se sjednoceným měřítkem a sémantické značky odvozené z pohledů z ulice. Datová sada HoHo tato data poskytuje, původní barevné snímky však kvůli ochraně soukromí nezveřejňuje.</p>
 <div class="findings">
-<article class="finding">
-<strong>65,4 / 100</strong>
-<h3>První místo na dosud neviděných domech</h3>
-<p>V neveřejném testu HoHo měl každý tým jediný pokus na dosud neviděných domech. WireDiT zvítězil v celkovém skóre struktury střechy (65,4 ze 100) i v metrice F1 pro rohy (79,1). Hlavní tvar střechy obvykle vystihne, ale za nepřesně umístěné hrany ztrácejí body i nejlepší metody. Druhý tým získal 64,8 bodu.</p>
-</article>
-<article class="finding">
-<strong>5,5 s</strong>
-<h3>Od připravené scény k modelu</h3>
-<p>Na jedné GPU NVIDIA A100 zabralo předzpracování scény, oba průchody modelem i výběr výsledku ze 16 odhadů celkem 5,5 sekundy. Měření začíná ve chvíli, kdy už jsou k dispozici mračno bodů, hloubkové mapy a polohy kamer.</p>
-</article>
-<article class="finding">
-<strong>+2,5 bodu</strong>
-<h3>Druhý průchod zpřesní střechu</h3>
-<p>Po ořezu scény podle prvního odhadu model znovu zpřesní polohy stejných rohů. Na validační sadě tím HSS stouplo z 47,4 na 49,9. To byl větší přínos než následný výběr ze 16 odhadů, který skóre zvýšil na 50,3.</p>
-</article>
+<article class="finding"><h3>Výsledky se potvrzují i na nových domech</h3><p>WireDiT navázal na dobré výsledky z validace i v neveřejném testu HoHo na dosud neviděných domech. Obsadil první místo v rekonstrukci tvaru střechy i v přesnosti určení rohů.</p></article>
+<article class="finding"><h3>Odhad střechy během několika sekund</h3><p>Jakmile jsou vstupy připravené, WireDiT odhadne tvar střechy na jedné grafické kartě NVIDIA A100 během několika sekund. Rekonstrukce se tak blíží práci v reálném čase.</p></article>
+<article class="finding"><h3>Druhý průchod zpřesňuje detaily</h3><p>První průchod zachytí celkový tvar střechy. Druhý využije hustší vzorek bodů v jejím okolí a zpřesní polohu rohů a hran. Komíny a malá okna zůstávají obtížné, zvlášť když je zachycuje jen několik bodů.</p></article>
 </div>
-<aside class="limit"><strong>Detail, který může chybět.</strong> I když hlavní tvar střechy sedí, v modelu může chybět komín. Při pohledu z ulice ho totiž ve 3D mračnu někdy zachytí jen několik bodů.</aside>
 </section>
 <section class="section" id="walkthrough">
 <h2 id="walk-title">Jak WireDiT rekonstruuje střechu</h2>
+<p>Vstupy pro WireDiT vznikají ze snímků pořízených z ulice. Ze shodných míst na více snímcích se sestaví 3D mračno bodů. Hloubkové mapy doplňují odhad vzdáleností, polohy a orientace kamer určují směr pohledu a segmentace označuje například střechy a okna.</p>
 <div class="walkthrough">
 <figure class="player"><video controls playsinline muted loop preload="none" aria-labelledby="walk-title" poster="../assets/cad034481c0.webp" src="../assets/cad034481c0.mp4"></video></figure>
-<ol><li><h3>Najít střechu</h3><p>Při prvním průchodu model z celého mračna bodů odhadne hlavní rohy a hrany střechy.</p></li><li><h3>Oříznout scénu podle odhadu</h3><p>Zelený objem obklopuje první odhad. Body mimo něj se odfiltrují a model se může soustředit na samotnou budovu.</p></li><li><h3>Zpřesnit polohu rohů</h3><p>Ve druhém průchodu model podle zbývajících bodů upraví polohy stejných rohů i jejich propojení.</p></li></ol>
+<ol>
+<li><h3>Vybrat body z celé scény</h3><p>Model vybere menší vzorek bodů z celé scény a při výběru upřednostní prvky střechy.</p></li>
+<li><h3>Zakódovat scénu</h3><p>Základní část sítě spojí polohy bodů s informacemi ze segmentace a vytvoří kompaktní popis domu.</p></li>
+<li><h3>Odhadnout celkový tvar střechy</h3><p>V první fázi naučený tok po malých krocích posouvá kandidátní body k pravděpodobným rohům střechy. Model také odhadne, které rohy spojuje hrana.</p></li>
+<li><h3>Znovu vybrat body v okolí střechy</h3><p>Zelený obrys vymezuje oblast kolem prvního odhadu. Hustší výběr bodů uvnitř této oblasti zachytí více detailů.</p></li>
+<li><h3>Zpřesnit drátový model</h3><p>Druhá fáze vychází z prvního odhadu. Naučený tok podle hustšího vzorku upraví polohu rohů a model zpřesní jejich spojení.</p></li>
+</ol>
 </div>
 </section>
 <section class="section" id="gallery">
 <h2>Galerie rekonstrukcí</h2>
-<p>Porovnejte čtyři domy. Tečky jsou pozorované 3D body, oranžové čáry ukazují odhad WireDiT a modré referenční tvar střechy. Sledujte, kde se čáry na hlavních hřebenech překryjí a kde se u drobných detailů ještě rozcházejí.</p>
+<p>Animace ukazuje jednotlivé kroky naučeného toku. Oranžový drátový model se pohybuje, protože WireDiT v každém kroku upravuje odhad polohy rohů. Tečky znázorňují pozorované 3D body a modré čáry ukazují referenční střechu pro srovnání.</p>
 <div class="gallery" data-assets="../assets/">
 <figure class="player">
 <video controls playsinline muted loop preload="none" aria-labelledby="scene-title" poster="../assets/01be0610fd5.webp" src="../assets/01be0610fd5.mp4">

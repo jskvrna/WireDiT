@@ -82,36 +82,29 @@
 </section>
 <section class="section" id="findings">
 <h2>Research findings</h2>
-<p>The model works with a sparse 3D point cloud, camera poses, scale-fitted depth maps and semantic labels derived from street-level views. HoHo provides these observations while withholding the original RGB images for privacy.</p>
 <div class="findings">
-<article class="finding">
-<strong>65.4 / 100</strong>
-<h3>First on houses the team had never seen</h3>
-<p>HoHo’s private test gave each team one submission on previously unseen houses. WireDiT led on both roof structure (65.4 out of 100) and corner F1 (79.1). It usually recovers the main roof shape, but misplaced edges cost points even for the strongest methods. The runner-up scored 64.8.</p>
-</article>
-<article class="finding">
-<strong>5.5 s</strong>
-<h3>From a prepared scene to a wireframe</h3>
-<p>On one NVIDIA A100 GPU, 5.5 seconds covered scene preprocessing, both model passes and consensus over 16 samples. The clock starts after the point cloud, depth maps and camera poses are available.</p>
-</article>
-<article class="finding">
-<strong>+2.5 points</strong>
-<h3>A second look improves the roof</h3>
-<p>Cropping around the first prediction and refining the same corners raised validation HSS from 47.4 to 49.9. That gain was larger than the next gain from 16-sample consensus, which brought HSS to 50.3.</p>
-</article>
+<article class="finding"><h3>Generalizes to unseen houses</h3><p>WireDiT’s strong validation performance carried over to houses held out for the private HoHo test, where it ranked first for both roof structure and corner detection.</p></article>
+<article class="finding"><h3>A roof estimate in seconds</h3><p>Once the scene inputs are ready, WireDiT estimates the roof in a few seconds on a single NVIDIA A100 GPU, bringing reconstruction close to real time.</p></article>
+<article class="finding"><h3>A second pass sharpens the details</h3><p>The first pass finds the overall roof shape. The second uses a denser sample around the roof to place corners and edges more precisely. Chimneys and small windows remain difficult when only a few points capture them.</p></article>
 </div>
-<aside class="limit"><strong>A detail to watch for.</strong> A chimney can be missing from the wireframe even when the main roof is right. From street level, a chimney may leave only a handful of 3D points for the model to work with.</aside>
 </section>
 <section class="section" id="walkthrough">
 <h2 id="walk-title">How WireDiT reconstructs a roof</h2>
+<p>Street-level photos provide the inputs to WireDiT. Matching a feature across views locates it in 3D. Depth maps estimate distances, camera poses locate each view, and segmentation labels identify features such as roofs and windows.</p>
 <div class="walkthrough">
 <figure class="player"><video controls playsinline muted loop preload="none" aria-labelledby="walk-title" poster="./assets/cad034481c0.webp" src="./assets/cad034481c0.mp4"></video></figure>
-<ol><li><h3>Find the roof</h3><p>The first pass uses the whole point cloud to estimate the main corners and how they connect.</p></li><li><h3>Crop around the estimate</h3><p>The green volume encloses the first prediction. Points outside this region drop out, leaving a closer look at the building.</p></li><li><h3>Refine the corners</h3><p>The second pass revisits the same corners using the remaining points and updates the edges between them.</p></li></ol>
+<ol>
+<li><h3>Subsample the point cloud</h3><p>Select a smaller set of points that covers the scene while giving roof features priority.</p></li>
+<li><h3>Encode the scene</h3><p>The network’s backbone combines point locations and image-derived labels into a compact representation of the house.</p></li>
+<li><h3>Estimate the overall roof</h3><p>The first flow moves candidate corners towards likely roof vertices in a series of small steps. The model predicts which corners connect.</p></li>
+<li><h3>Resample around the roof</h3><p>The green outline marks the crop around the first estimate. Sampling more densely inside it gives the model more detail.</p></li>
+<li><h3>Refine the wireframe</h3><p>Starting from the first estimate, the second flow adjusts the corners using the denser sample and updates their connections.</p></li>
+</ol>
 </div>
 </section>
 <section class="section" id="gallery">
 <h2>Reconstruction gallery</h2>
-<p>Compare four houses. The dots are 3D observations, the orange lines are WireDiT’s prediction and the blue lines mark the reference roof. Watch where the lines converge along the main ridges and where smaller structures still differ.</p>
+<p>Each animation shows the learned flow one step at a time. The orange wireframe moves as WireDiT updates its estimated corner positions. The dots show the observed 3D points, and the blue lines mark the reference roof for comparison.</p>
 <div class="gallery" data-assets="./assets/">
 <figure class="player">
 <video controls playsinline muted loop preload="none" aria-labelledby="scene-title" poster="./assets/01be0610fd5.webp" src="./assets/01be0610fd5.mp4">
